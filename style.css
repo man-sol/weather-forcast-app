@@ -1,0 +1,25 @@
+body {
+  transition: background 0.5s ease;
+}
+
+/* Weather backgrounds */
+.clear {
+  background: radial-gradient(circle, #facc15 0%, #000 70%);
+}
+
+.clouds {
+  background: radial-gradient(circle, #525252 0%, #000 70%);
+}
+
+.rain {
+  background: radial-gradient(circle, #1f2933 0%, #000 70%);
+}
+
+/* Forecast card */
+.forecast-card {
+  background: #000;
+  border: 1px solid #facc15;
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+}
