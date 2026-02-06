@@ -134,6 +134,8 @@ function updateTemperature() {
     : `${(currentTempC * 9 / 5 + 32).toFixed(1)} °F`;
 }
 
+// extreme temprature alert
+
 function handleExtremeHeat() {
   if (currentTempC > 40) {
     alertBox.textContent = "Extreme heat alert!";
@@ -141,5 +143,33 @@ function handleExtremeHeat() {
   } else {
     alertBox.classList.add("hidden");
   }
+}
+
+//Forecast of 5 days 
+
+async function fetchForecast(lat, lon) {
+  const res = await fetch(
+    `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${API_KEY}`
+  );
+  const data = await res.json();
+
+  forecast.innerHTML = "";
+
+  data.list
+    .filter((_, index) => index % 8 === 0)
+    .slice(0, 5)
+    .forEach(day => {
+      const tempC = (day.main.temp - 273.15).toFixed(1);
+
+      forecast.innerHTML += `
+        <div class="forecast-card">
+          <p>${new Date(day.dt_txt).toDateString()}</p>
+          <img src="https://openweathermap.org/img/wn/${day.weather[0].icon}.png" />
+          <p>${tempC} °C</p>
+          <p>Humidity: ${day.main.humidity}%</p>
+          <p>Wind: ${day.wind.speed} m/s</p>
+        </div>
+      `;
+    });
 }
 
