@@ -23,6 +23,20 @@ const alertBox = document.getElementById("alertBox");
 const weatherSection = document.getElementById("weatherSection");
 const emptyState = document.getElementById("emptyState");
 
+// getting weather icons 
+function getWeatherIcon(condition) {
+  condition = condition.toLowerCase();
+
+  if (condition.includes("clear")) return "icons/clear.png";
+  if (condition.includes("cloud")) return "icons/cloudy.png";
+  if (condition.includes("rain") || condition.includes("drizzle") || condition.includes("shower")) return "icons/rain.png";
+  if (condition.includes("snow")) return "icons/snow.png";
+  if (condition.includes("thunder") || condition.includes("storm")) return "icons/thunder.png";
+
+  return "icons/clear.png"; // fallback
+}
+
+
 // Defining States
 
 let isCelsius = true;
@@ -148,30 +162,45 @@ function handleExtremeHeat() {
 //Forecast of 5 days 
 
 async function fetchForecast(lat, lon) {
-  const res = await fetch(
-    `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${API_KEY}`
-  );
-  const data = await res.json();
+  try {
+    const res = await fetch(
+      `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`
+    );
+    const data = await res.json();
 
-  forecast.innerHTML = "";
+    forecast.innerHTML = ""; // clear previous forecast
 
-  data.list
-    .filter((_, index) => index % 8 === 0)
-    .slice(0, 5)
-    .forEach(day => {
-      const tempC = (day.main.temp - 273.15).toFixed(1);
+    // Pick one forecast per day (every 8th 3-hour block) and limit to 5 days
+    data.list
+      .filter((_, index) => index % 8 === 0)
+      .slice(0, 5)
+      .forEach(day => {
+        const tempC = day.main.temp.toFixed(1);
+        const condition = day.weather[0].main;
+        const icon = getWeatherIcon(condition);
 
-      forecast.innerHTML += `
-        <div class="forecast-card">
-          <p>${new Date(day.dt_txt).toDateString()}</p>
-          <img src="https://openweathermap.org/img/wn/${day.weather[0].icon}.png" />
-          <p>${tempC} °C</p>
-          <p>Humidity: ${day.main.humidity}%</p>
-          <p>Wind: ${day.wind.speed} m/s</p>
-        </div>
-      `;
-    });
+        forecast.innerHTML += `
+          <div class="bg-black/60 border border-yellow-400/30 rounded-xl p-4 flex flex-col items-center text-center shadow-lg">
+            <p class="text-sm text-gray-300 mb-2">${new Date(day.dt_txt).toDateString()}</p>
+
+            <img
+              src="${icon}"
+              alt="${condition}"
+              class="w-16 h-16 mb-2"
+            />
+
+            <p class="text-yellow-400 font-semibold mb-1">${tempC} °C</p>
+            <p class="text-gray-400 text-sm mb-1">Humidity: ${day.main.humidity}%</p>
+            <p class="text-gray-400 text-sm">Wind: ${day.wind.speed} m/s</p>
+          </div>
+        `;
+      });
+  } catch (err) {
+    console.error("Forecast fetch error:", err);
+    forecast.innerHTML = "<p class='text-red-400'>Unable to load forecast.</p>";
+  }
 }
+
 
 //  background handlers
 
