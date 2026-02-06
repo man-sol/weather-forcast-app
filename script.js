@@ -81,3 +81,26 @@ async function fetchByCity(city) {
     showError(err.message);
   }
 }
+
+
+// fetching using Coordinates
+
+async function fetchByCoords(lat, lon) {
+  try {
+    hideError();
+
+    const res = await fetch(
+      `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}`
+    );
+
+    if (!res.ok) throw new Error("Unable to fetch weather");
+
+    const data = await res.json();
+    displayWeather(data);
+    fetchForecast(lat, lon);
+
+  } catch (err) {
+    showError(err.message);
+  }
+}
+
