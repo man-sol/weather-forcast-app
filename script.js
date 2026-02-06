@@ -104,3 +104,26 @@ async function fetchByCoords(lat, lon) {
   }
 }
 
+// Display weather 
+
+function displayWeather(data) {
+  emptyState.classList.add("hidden");
+  weatherSection.classList.remove("hidden");
+
+  cityName.textContent = data.name;
+
+  currentTempC = (data.main.temp - 273.15).toFixed(1);
+  updateTemperature();
+
+  description.textContent = data.weather[0].description;
+  humidity.textContent = `${data.main.humidity}%`;
+  wind.textContent = `${data.wind.speed} m/s`;
+
+  weatherIcon.src =
+    `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+
+  handleExtremeHeat();
+  setBackground(data.weather[0].main.toLowerCase());
+}
+
+
