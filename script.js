@@ -173,3 +173,16 @@ async function fetchForecast(lat, lon) {
     });
 }
 
+//  background handlers
+
+function setBackground(condition) {
+  document.body.classList.remove("rain", "clouds", "clear");
+
+  if (condition.includes("rain")) {
+    document.body.classList.add("rain");
+  } else if (condition.includes("cloud")) {
+    document.body.classList.add("clouds");
+  } else {
+    document.body.classList.add("clear");
+  }
+}
