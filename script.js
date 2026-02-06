@@ -209,6 +209,21 @@ function renderCities() {
   });
 }
 
+// Error handling
+
+
+function showError(message) {
+  errorMsg.textContent = message;
+  errorMsg.classList.remove("hidden");
+}
+
+function hideError() {
+  errorMsg.classList.add("hidden");
+}
+
+// Initialization code
+
+renderCities();
 
 
 
