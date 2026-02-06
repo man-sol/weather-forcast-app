@@ -185,4 +185,30 @@ function setBackground(condition) {
   } else {
     document.body.classList.add("clear");
   }
+
 }
+
+// Recent searches  drop down 
+
+function saveCity(city) {
+  let cities = JSON.parse(localStorage.getItem("cities")) || [];
+  if (!cities.includes(city)) cities.push(city);
+  localStorage.setItem("cities", JSON.stringify(cities));
+  renderCities();
+}
+
+function renderCities() {
+  const cities = JSON.parse(localStorage.getItem("cities")) || [];
+  if (!cities.length) return;
+
+  recentCities.classList.remove("hidden");
+  recentCities.innerHTML = `<option value="default">Recent cities</option>`;
+
+  cities.forEach(city => {
+    recentCities.innerHTML += `<option value="${city}">${city}</option>`;
+  });
+}
+
+
+
+
