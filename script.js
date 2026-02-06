@@ -23,4 +23,61 @@ const alertBox = document.getElementById("alertBox");
 const weatherSection = document.getElementById("weatherSection");
 const emptyState = document.getElementById("emptyState");
 
+// Defining States
 
+let isCelsius = true;
+let currentTempC = null;
+
+// Adding events
+
+searchBtn.addEventListener("click", () => {
+  const city = cityInput.value.trim();
+  if (!city) return showError("City name cannot be empty");
+  fetchByCity(city);
+});
+
+locationBtn.addEventListener("click", () => {
+  if (!navigator.geolocation) {
+    return showError("Geolocation not supported");
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    pos => fetchByCoords(pos.coords.latitude, pos.coords.longitude),
+    () => showError("Location permission denied")
+  );
+});
+
+toggleTempBtn.addEventListener("click", () => {
+  if (currentTempC === null) return;
+  isCelsius = !isCelsius;
+  updateTemperature();
+});
+
+recentCities.addEventListener("change", e => {
+  if (e.target.value !== "default") {
+    fetchByCity(e.target.value);
+  }
+});
+
+// fetch by city name
+
+async function fetchByCity(city) {
+  try {
+    hideError();
+
+    // Convert city to coordinates
+    const geoRes = await fetch(
+      `https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${API_KEY}`
+    );
+    const geoData = await geoRes.json();
+
+    if (!geoData.length) throw new Error("City not found");
+
+    const { lat, lon, name } = geoData[0];
+    saveCity(name);
+    fetchByCoords(lat, lon);
+
+  } catch (err) {
+    showError(err.message);
+  }
+}
