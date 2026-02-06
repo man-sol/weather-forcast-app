@@ -126,4 +126,20 @@ function displayWeather(data) {
   setBackground(data.weather[0].main.toLowerCase());
 }
 
+// Toggle temperature 
+
+function updateTemperature() {
+  temperatureEl.textContent = isCelsius
+    ? `${currentTempC} °C`
+    : `${(currentTempC * 9 / 5 + 32).toFixed(1)} °F`;
+}
+
+function handleExtremeHeat() {
+  if (currentTempC > 40) {
+    alertBox.textContent = "Extreme heat alert!";
+    alertBox.classList.remove("hidden");
+  } else {
+    alertBox.classList.add("hidden");
+  }
+}
 
